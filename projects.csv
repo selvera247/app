@@ -1,0 +1,11 @@
+id,name,source,type,status,pain_points,systems_touched,revenue_flow_impacted,audit_critical,bi,risk,align,urgency,complexity,cost,priority_score
+1,RevRec Contract Modifications Automation,Intake,RevRec,Backlog,"Modifications manually tracked → high risk of ASC 606 error","ERP RevRec Subledger",Subscription+Usage,Yes,5,5,5,4,3,3,36
+2,Revenue Forecast Source-of-Truth Alignment,Intake,Reporting / FP&A,Backlog,"Forecast data inconsistent with actuals, manual reconciliations required","ERP, Data Warehouse, FP&A tool",Subscription+Usage,No,5,4,5,4,4,4,33
+3,Consumption Billing Minimum Handling,Intake,Billing & Invoicing,Backlog,"Billing disputes caused by minimum charge misinterpretation","Usage System, Billing",Usage,Yes,4,4,5,5,4,4,32
+4,Deferred Revenue Reporting Standardization,Jira,Reporting / FP&A,Backlog,"Region-specific views, inconsistent definitions confuse auditors","ERP, Data Warehouse",Subscription+Usage,Yes,4,4,5,4,3,3,31
+5,Global Price Book Compliance,Jira,Product Catalog / Pricing,Backlog,"Unauthorized price deviations → margin leakage","CPQ, Pricing Tool, ERP",Subscription+Usage,Yes,4,4,5,4,4,4,30
+6,Billing Dispute Analytics,Intake,Billing & Invoicing,Backlog,"No systematic trend analysis, recurring dispute types unclear","ERP, AR Subledger, BI",Subscription+Usage,No,4,3,4,4,3,3,28
+7,SKU Lifecycle Governance,Jira,Product Catalog / Pricing,Backlog,"Orphaned SKUs and inconsistent mapping create accounting errors","CPQ, ERP",Subscription+Usage,Yes,3,3,4,3,4,3,24
+8,Sales Order Pre-Validation Service,Intake,CPQ / Order Intake,Backlog,"High number of downstream corrections due to missing required metadata","Salesforce, CPQ",Subscription+Usage,No,3,3,3,3,3,3,23
+9,Tax Jurisdiction Data Quality Program,Intake,Compliance & Tax,Backlog,"Incorrect tax mapping → invoice errors + customer credits","Tax Engine, Billing",Subscription+Usage,Yes,3,4,3,3,4,3,23
+10,Invoice Email Delivery Tracking,Intake,Billing & Invoicing,Backlog,"Customers claim non-receipt → delays in payment and DSO","Billing System, Email Service",Subscription+Usage,No,2,3,3,3,2,2,20
