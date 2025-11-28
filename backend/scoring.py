@@ -13,6 +13,24 @@ OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434")
 OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3.1")
 
 
+def _call_ollama(payload: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Helper to call Ollama and return parsed JSON.
+    """
+    try:
+        resp = requests.post(
+            f"{OLLAMA_URL}/api/chat",
+            json=payload,
+            timeout=120,
+        )
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        raise RuntimeError(f"Error calling Ollama at {OLLAMA_URL}: {e}")
+
+    data = resp.json()
+    return data
+
+
 def score_project_ai(description: str, systems: str = "") -> Dict[str, Any]:
     """
     Calls a local Ollama model and returns:
@@ -66,17 +84,7 @@ Respond ONLY with a JSON object, no extra text.
         "stream": False,
     }
 
-    try:
-        resp = requests.post(
-            f"{OLLAMA_URL}/api/chat",
-            json=payload,
-            timeout=120,
-        )
-        resp.raise_for_status()
-    except requests.RequestException as e:
-        raise RuntimeError(f"Error calling Ollama at {OLLAMA_URL}: {e}")
-
-    data = resp.json()
+    data = _call_ollama(payload)
 
     # For format=json, message.content is JSON-compatible
     message = data.get("message", {})
@@ -106,13 +114,102 @@ Respond ONLY with a JSON object, no extra text.
 
     return {
         "bi": bi,
-        "risk": risk,
-        "align": align,
-        "urgency": urgency,
-        "complexity": complexity,
-        "cost": cost,
-        "priority_score": priority_score,
-        "rationale": raw.get("rationale", ""),
-        "lenses": raw.get("lenses", []),
-        "recommended_priority": raw.get("recommended_priority", 1),
+            "risk": risk,
+            "align": align,
+            "urgency": urgency,
+            "complexity": complexity,
+            "cost": cost,
+            "priority_score": priority_score,
+            "rationale": raw.get("rationale", ""),
+            "lenses": raw.get("lenses", []),
+            "recommended_priority": raw.get("recommended_priority", 1),
+        }
+
+
+def generate_project_charter_ai(
+    name: str,
+    project_type: str,
+    pain_points: str,
+    systems_touched: str,
+    revenue_flow_impacted: str,
+    audit_critical: str,
+) -> str:
+    """
+    Generate a standardized project charter in Markdown for the given project.
+    Returns a markdown string (no JSON).
+    """
+
+    system_msg = (
+        "You are a senior Finance Transformation leader creating clear, "
+        "concise project charters for revenue-impacting initiatives."
+    )
+
+    user_prompt = f"""
+Create a standardized project charter in clear Markdown for the following project.
+
+Project Name: {name}
+Project Type: {project_type}
+Revenue Flow Impacted: {revenue_flow_impacted}
+Audit Critical: {audit_critical}
+
+Systems Touched:
+{systems_touched}
+
+Pain Points / Problem Description:
+{pain_points}
+
+The charter must use the following sections as Markdown headings:
+
+# Project Charter – (use the project name in the title)
+
+## 1. Problem Statement
+- Summarize the core problem in 2–4 bullet points.
+
+## 2. Objectives & Success Metrics
+- List 3–5 concrete objectives.
+- Include 3–5 example KPIs with directional targets (e.g. "Reduce revenue reclass volume by 40–60%").
+
+## 3. Scope
+- In-Scope: bullets.
+- Out-of-Scope: bullets (call out what this project will NOT do).
+
+## 4. Systems & Data Impact
+- List the main systems and typical objects/tables impacted.
+- Note any key data lineage considerations.
+
+## 5. Risks, Dependencies & Assumptions
+- Risks: bullets (especially if Audit Critical = Yes).
+- Dependencies: bullets (e.g. other projects, teams, or data readiness).
+- Assumptions: bullets.
+
+## 6. Timeline & Phasing (High-Level)
+- Phase 1: name + 1–2 bullets.
+- Phase 2: name + 1–2 bullets.
+- Phase 3: name + 1–2 bullets.
+
+## 7. Stakeholders & RACI (Lite)
+- List key roles (e.g. RevRec Lead, Billing PM, Data Engineering, FP&A).
+- For each, indicate R/A/C/I in a simple text-friendly way (no tables required, a bullet list is fine).
+
+Write in a professional but concise tone. Do NOT add any extra commentary outside of the Markdown charter.
+"""
+
+    payload = {
+        "model": OLLAMA_MODEL,
+        "messages": [
+            {"role": "system", "content": system_msg},
+            {"role": "user", "content": user_prompt},
+        ],
+        # We want plain text/markdown, not JSON here
+        "stream": False,
     }
+
+    data = _call_ollama(payload)
+    message = data.get("message", {})
+    content = message.get("content", "")
+
+    # content should already be markdown text
+    if not isinstance(content, str):
+        content = str(content)
+
+    return content
