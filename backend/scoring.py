@@ -5,7 +5,7 @@ from typing import Dict, Any
 import requests
 from dotenv import load_dotenv
 
-# Load .env if present (optional, for custom config like OLLAMA_MODEL)
+# Load .env if present (optional, e.g. for OLLAMA_URL or OLLAMA_MODEL overrides)
 load_dotenv()
 
 # Defaults for Ollama
@@ -114,16 +114,16 @@ Respond ONLY with a JSON object, no extra text.
 
     return {
         "bi": bi,
-            "risk": risk,
-            "align": align,
-            "urgency": urgency,
-            "complexity": complexity,
-            "cost": cost,
-            "priority_score": priority_score,
-            "rationale": raw.get("rationale", ""),
-            "lenses": raw.get("lenses", []),
-            "recommended_priority": raw.get("recommended_priority", 1),
-        }
+        "risk": risk,
+        "align": align,
+        "urgency": urgency,
+        "complexity": complexity,
+        "cost": cost,
+        "priority_score": priority_score,
+        "rationale": raw.get("rationale", ""),
+        "lenses": raw.get("lenses", []),
+        "recommended_priority": raw.get("recommended_priority", 1),
+    }
 
 
 def generate_project_charter_ai(
