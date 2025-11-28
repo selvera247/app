@@ -52,7 +52,7 @@ def call_ai_scoring(description: str, systems: str):
 # ---------------------------
 df = load_projects()
 
-st.title("📋 Revenue Transformation Backlog")
+st.title("Revenue Transformation Backlog")
 
 # ---------------------------
 # Sidebar Filters
@@ -104,7 +104,7 @@ st.dataframe(
 )
 
 st.markdown("---")
-st.subheader("🔍 Project Detail & AI Insights")
+st.subheader("Project Detail & AI Insights")
 
 if filtered.empty:
     st.info("No projects match the current filters.")
@@ -147,7 +147,7 @@ else:
 
     # ---------- Right: AI Insights ----------
     with col_right:
-        st.markdown("#### 🤖 AI Score Suggestion")
+        st.markdown("####AI Score Suggestion")
 
         if st.button("✨ Generate AI Suggestion"):
             with st.spinner("Calling Copilot API..."):
