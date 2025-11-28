@@ -5,7 +5,7 @@ import pandas as pd
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-from .scoring import score_project_ai
+from .scoring import score_project_ai, generate_project_charter_ai
 
 app = FastAPI(title="Revenue Project Copilot API")
 
@@ -37,6 +37,19 @@ class ProjectScoreRequest(BaseModel):
     project_id: int  # must match the 'id' column in projects.csv
     description_override: Optional[str] = None
     systems_override: Optional[str] = None
+
+
+class CharterRequest(BaseModel):
+    name: str
+    project_type: str
+    pain_points: str
+    systems_touched: str
+    revenue_flow_impacted: str
+    audit_critical: str
+
+
+class CharterResponse(BaseModel):
+    charter_markdown: str
 
 
 # ---------- Health ----------
@@ -71,3 +84,17 @@ def ai_score_project_by_id(req: ProjectScoreRequest):
 
     result = score_project_ai(description, systems)
     return ScoreResponse(**result)
+
+
+# ---------- Project charter generation ----------
+@app.post("/ai/project_charter", response_model=CharterResponse)
+def ai_project_charter(req: CharterRequest):
+    charter = generate_project_charter_ai(
+        name=req.name,
+        project_type=req.project_type,
+        pain_points=req.pain_points,
+        systems_touched=req.systems_touched,
+        revenue_flow_impacted=req.revenue_flow_impacted,
+        audit_critical=req.audit_critical,
+    )
+    return CharterResponse(charter_markdown=charter)
