@@ -77,7 +77,7 @@ def call_project_charter(
 # ---------------------------
 df = load_projects()
 
-st.title("📋 Revenue Transformation Backlog")
+st.title("Revenue Transformation Backlog")
 
 # ---------------------------
 # Sidebar Filters
@@ -129,7 +129,7 @@ st.dataframe(
 )
 
 st.markdown("---")
-st.subheader("🔍 Project Detail & AI Insights")
+st.subheader("Project Detail & AI Insights")
 
 if filtered.empty:
     st.info("No projects match the current filters.")
