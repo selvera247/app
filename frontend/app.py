@@ -47,12 +47,37 @@ def call_ai_scoring(description: str, systems: str):
     return resp.json()
 
 
+def call_project_charter(
+    name: str,
+    project_type: str,
+    pain_points: str,
+    systems_touched: str,
+    revenue_flow_impacted: str,
+    audit_critical: str,
+):
+    """
+    Call FastAPI backend /ai/project_charter
+    """
+    url = f"{API_BASE}/ai/project_charter"
+    payload = {
+        "name": name,
+        "project_type": project_type,
+        "pain_points": pain_points,
+        "systems_touched": systems_touched,
+        "revenue_flow_impacted": revenue_flow_impacted,
+        "audit_critical": audit_critical,
+    }
+    resp = requests.post(url, json=payload, timeout=120)
+    resp.raise_for_status()
+    return resp.json()
+
+
 # ---------------------------
 # Load data
 # ---------------------------
 df = load_projects()
 
-st.title("Revenue Transformation Backlog")
+st.title("📋 Revenue Transformation Backlog")
 
 # ---------------------------
 # Sidebar Filters
@@ -104,7 +129,7 @@ st.dataframe(
 )
 
 st.markdown("---")
-st.subheader("Project Detail & AI Insights")
+st.subheader("🔍 Project Detail & AI Insights")
 
 if filtered.empty:
     st.info("No projects match the current filters.")
@@ -145,12 +170,19 @@ else:
 
         st.metric("Priority Score", project.get("priority_score", None))
 
-    # ---------- Right: AI Insights ----------
+        # Project Charter display area
+        st.markdown("#### 📄 Project Charter")
+        charter_state_key = f"charter_{project['id']}"
+        charter_text = st.session_state.get(charter_state_key, "")
+        if charter_text:
+            st.markdown(charter_text)
+
+    # ---------- Right: AI Insights & Charter Trigger ----------
     with col_right:
-        st.markdown("####AI Score Suggestion")
+        st.markdown("#### 🤖 AI Score Suggestion")
 
         if st.button("✨ Generate AI Suggestion"):
-            with st.spinner("Calling Copilot API..."):
+            with st.spinner("Calling Copilot API (scoring)..."):
                 try:
                     ai_result = call_ai_scoring(
                         description=str(project["pain_points"]),
@@ -195,3 +227,28 @@ else:
 
                 except Exception as e:
                     st.error(f"AI scoring failed: {e}")
+
+        st.markdown("---")
+        st.markdown("#### 📄 Project Charter Creation")
+
+        if st.button("📄 Generate Project Charter"):
+            with st.spinner("Calling Copilot API (charter)..."):
+                try:
+                    charter_resp = call_project_charter(
+                        name=str(project["name"]),
+                        project_type=str(project["type"]),
+                        pain_points=str(project["pain_points"]),
+                        systems_touched=str(project["systems_touched"]),
+                        revenue_flow_impacted=str(project["revenue_flow_impacted"]),
+                        audit_critical=str(project["audit_critical"]),
+                    )
+                    charter_md = charter_resp.get("charter_markdown", "")
+                    if charter_md:
+                        # store in session so it persists while you click around
+                        st.session_state[charter_state_key] = charter_md
+                        st.success("Project charter generated below.")
+                    else:
+                        st.warning("No charter content returned.")
+
+                except Exception as e:
+                    st.error(f"Project charter generation failed: {e}")
