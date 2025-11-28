@@ -77,7 +77,7 @@ def call_project_charter(
 # ---------------------------
 df = load_projects()
 
-st.title("Revenue Transformation Backlog")
+st.title("📋 Revenue Transformation Backlog")
 
 # ---------------------------
 # Sidebar Filters
@@ -129,7 +129,7 @@ st.dataframe(
 )
 
 st.markdown("---")
-st.subheader("Project Detail & AI Insights")
+st.subheader("🔍 Project Detail & AI Insights")
 
 if filtered.empty:
     st.info("No projects match the current filters.")
@@ -172,10 +172,22 @@ else:
 
         # Project Charter display area
         st.markdown("#### 📄 Project Charter")
-        charter_state_key = f"charter_{project['id']}"
-        charter_text = st.session_state.get(charter_state_key, "")
-        if charter_text:
+
+        charter_text = st.session_state.get("charter_text", "")
+        charter_project_id = st.session_state.get("charter_project_id", None)
+
+        if charter_text and charter_project_id == project["id"]:
             st.markdown(charter_text)
+
+            # Download as .md
+            st.download_button(
+                "⬇️ Download Charter (.md)",
+                data=charter_text,
+                file_name=f"{str(project['name']).replace(' ', '_')}_charter.md",
+                mime="text/markdown",
+            )
+        else:
+            st.info("No charter generated yet for this project.")
 
     # ---------- Right: AI Insights & Charter Trigger ----------
     with col_right:
@@ -231,7 +243,7 @@ else:
         st.markdown("---")
         st.markdown("#### 📄 Project Charter Creation")
 
-        if st.button("Generate Project Charter"):
+        if st.button("📄 Generate Project Charter"):
             with st.spinner("Calling Copilot API (charter)..."):
                 try:
                     charter_resp = call_project_charter(
@@ -244,9 +256,12 @@ else:
                     )
                     charter_md = charter_resp.get("charter_markdown", "")
                     if charter_md:
-                        # store in session so it persists while you click around
-                        st.session_state[charter_state_key] = charter_md
-                        st.success("Project charter generated below.")
+                        st.session_state["charter_text"] = charter_md
+                        st.session_state["charter_project_id"] = project["id"]
+                        st.success("Project charter generated and shown on the left.")
+
+                        st.markdown("##### Preview")
+                        st.markdown(charter_md)
                     else:
                         st.warning("No charter content returned.")
 
