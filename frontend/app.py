@@ -92,12 +92,17 @@ def call_project_charter(
     return resp.json()
 
 
-def update_status(intake_id: str, new_status: str):
+def update_status(intake_id: str, new_status: str, triage_owner: str, triage_notes: str):
     """
-    Call Cloudflare Pages API to update status for a given intake id.
+    Call Cloudflare Pages API to update status + triage for a given intake id.
     """
     url = STATUS_API
-    payload = {"id": intake_id, "status": new_status}
+    payload = {
+        "id": intake_id,
+        "status": new_status,
+        "triage_owner": triage_owner,
+        "triage_notes": triage_notes,
+    }
     resp = requests.put(url, json=payload, timeout=30)
     resp.raise_for_status()
     return resp.json()
@@ -152,7 +157,7 @@ st.subheader(f"Backlog ({len(filtered)} of {len(df)} projects)")
 if filtered.empty:
     st.info("No projects found. Check your D1 data or filters.")
 else:
-    # Show Jira key in table if present
+    # Show Jira key + triage owner in table if present
     cols_to_show = [
         "id",
         "name",
@@ -162,6 +167,7 @@ else:
         "revenue_flow_impacted",
         "audit_critical",
         "priority_score",
+        "triage_owner",
         "systems_touched",
         "pain_points",
     ]
@@ -244,6 +250,21 @@ else:
         else:
             st.info("No charter generated yet for this project.")
 
+        # ---------- Triage fields ----------
+        st.markdown("#### 🧩 Triage Fields")
+
+        triage_owner_val = st.text_input(
+            "Triage Owner",
+            value=str(project.get("triage_owner", "") or ""),
+            key=f"triage_owner_{project['id']}",
+        )
+
+        triage_notes_val = st.text_area(
+            "Triage Notes",
+            value=str(project.get("triage_notes", "") or ""),
+            key=f"triage_notes_{project['id']}",
+        )
+
         # ---------- Status update controls ----------
         st.markdown("#### 🔄 Update Status")
 
@@ -268,15 +289,20 @@ else:
             key=f"status_select_{project['id']}",
         )
 
-        if st.button("Save Status", key=f"save_status_{project['id']}"):
+        if st.button("Save Status & Triage", key=f"save_status_{project['id']}"):
             try:
-                update_status(str(project["id"]), new_status)
+                update_status(
+                    str(project["id"]),
+                    new_status,
+                    triage_owner_val,
+                    triage_notes_val,
+                )
                 st.success(f"Status updated to {new_status}")
                 # refresh data
                 load_projects.clear()
                 st.rerun()
             except Exception as e:
-                st.error(f"Failed to update status: {e}")
+                st.error(f"Failed to update status/triage: {e}")
 
     # ---------- Right: AI Insights & Charter Trigger ----------
     with col_right:
@@ -358,3 +384,31 @@ else:
 
                 except Exception as e:
                     st.error(f"Project charter generation failed: {e}")
+
+# ---------------------------
+# Steering Committee View
+# ---------------------------
+st.markdown("---")
+st.subheader("🏛 Steering Committee View")
+
+if df.empty:
+  st.info("No projects available.")
+else:
+  steering_statuses = ["Prioritized", "Sent to Epic", "In Progress"]
+  steering_df = df[df["status"].isin(steering_statuses)].copy()
+
+  if steering_df.empty:
+    st.info("No projects in Prioritized / Sent to Epic / In Progress yet.")
+  else:
+    cols = [
+        "name",
+        "source",
+        "status",
+        "priority_score",
+        "triage_owner",
+        "jira_key",
+        "revenue_flow_impacted",
+        "audit_critical",
+    ]
+    existing_cols = [c for c in cols if c in steering_df.columns]
+    st.dataframe(steering_df[existing_cols], use_container_width=True)
