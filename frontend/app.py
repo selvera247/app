@@ -2,7 +2,11 @@ import pandas as pd
 import streamlit as st
 import requests
 
-API_BASE = "http://localhost:8000"  # FastAPI backend
+# ✅ Your Cloudflare Worker backlog API
+BACKLOG_API = "https://intake.selveracj.workers.dev/api/backlog"
+
+# ✅ Your FastAPI backend for scoring + charter (same as before)
+API_BASE = "http://localhost:8000"
 
 
 st.set_page_config(
@@ -13,10 +17,22 @@ st.set_page_config(
 
 
 @st.cache_data
-def load_projects(path: str = "projects.csv") -> pd.DataFrame:
-    df = pd.read_csv(path)
+def load_projects() -> pd.DataFrame:
+    """
+    Load projects from Cloudflare D1 via Worker JSON API.
+    Expects { "projects": [ ... ] } from /api/backlog.
+    """
+    resp = requests.get(BACKLOG_API, timeout=30)
+    resp.raise_for_status()
+    data = resp.json()
 
-    # Normalize types
+    projects = data.get("projects", [])
+    df = pd.DataFrame(projects)
+
+    if df.empty:
+        return df
+
+    # Normalize columns to what the app expects
     if "audit_critical" in df.columns:
         df["audit_critical"] = df["audit_critical"].astype(str)
 
@@ -77,7 +93,7 @@ def call_project_charter(
 # ---------------------------
 df = load_projects()
 
-st.title("Revenue Transformation Backlog")
+st.title("📋 Revenue Transformation Backlog")
 
 # ---------------------------
 # Sidebar Filters
@@ -85,10 +101,16 @@ st.title("Revenue Transformation Backlog")
 with st.sidebar:
     st.header("Filters")
 
-    type_options = ["All"] + sorted(df["type"].dropna().unique().tolist())
-    selected_type = st.selectbox("Project Type", type_options, index=0)
+    if df.empty:
+        type_options = ["All"]
+        flow_options = ["All"]
+    else:
+        type_options = ["All"] + sorted(df["type"].dropna().unique().tolist())
+        flow_options = ["All"] + sorted(
+            df["revenue_flow_impacted"].dropna().unique().tolist()
+        )
 
-    flow_options = ["All"] + sorted(df["revenue_flow_impacted"].dropna().unique().tolist())
+    selected_type = st.selectbox("Project Type", type_options, index=0)
     selected_flow = st.selectbox("Revenue Flow Impacted", flow_options, index=0)
 
     audit_options = ["All", "Yes", "No"]
@@ -97,39 +119,44 @@ with st.sidebar:
 # Apply filters
 filtered = df.copy()
 
-if selected_type != "All":
-    filtered = filtered[filtered["type"] == selected_type]
+if not filtered.empty:
+    if selected_type != "All":
+        filtered = filtered[filtered["type"] == selected_type]
 
-if selected_flow != "All":
-    filtered = filtered[filtered["revenue_flow_impacted"] == selected_flow]
+    if selected_flow != "All":
+        filtered = filtered[filtered["revenue_flow_impacted"] == selected_flow]
 
-if selected_audit != "All":
-    filtered = filtered[filtered["audit_critical"].astype(str) == selected_audit]
+    if selected_audit != "All":
+        filtered = filtered[filtered["audit_critical"].astype(str) == selected_audit]
 
-# Sort by priority_score desc
-filtered = filtered.sort_values("priority_score", ascending=False)
+    # Sort by priority_score desc if present
+    if "priority_score" in filtered.columns:
+        filtered = filtered.sort_values("priority_score", ascending=False)
 
 st.subheader(f"Backlog ({len(filtered)} of {len(df)} projects)")
-st.dataframe(
-    filtered[
-        [
-            "id",
-            "name",
-            "source",
-            "type",
-            "status",
-            "revenue_flow_impacted",
-            "audit_critical",
-            "priority_score",
-            "systems_touched",
-            "pain_points",
-        ]
-    ],
-    use_container_width=True,
-)
+if filtered.empty:
+    st.info("No projects found. Check your D1 data or filters.")
+else:
+    st.dataframe(
+        filtered[
+            [
+                "id",
+                "name",
+                "source",
+                "type",
+                "status",
+                "revenue_flow_impacted",
+                "audit_critical",
+                "priority_score",
+                "systems_touched",
+                "pain_points",
+            ]
+        ],
+        use_container_width=True,
+    )
 
 st.markdown("---")
-st.subheader("Project Detail & AI Insights")
+st.subheader("🔍 Project Detail & AI Insights")
 
 if filtered.empty:
     st.info("No projects match the current filters.")
@@ -146,18 +173,21 @@ else:
         st.markdown(f"### {project['name']}")
 
         meta_cols = st.columns(3)
-        meta_cols[0].metric("Type", project["type"])
-        meta_cols[1].metric("Source", project["source"])
-        meta_cols[2].metric("Status", project["status"])
+        meta_cols[0].metric("Type", project.get("type", ""))
+        meta_cols[1].metric("Source", project.get("source", ""))
+        meta_cols[2].metric("Status", project.get("status", ""))
 
-        st.markdown("**Revenue Flow Impacted:** " + str(project["revenue_flow_impacted"]))
-        st.markdown("**Audit Critical:** " + str(project["audit_critical"]))
+        st.markdown(
+            "**Revenue Flow Impacted:** "
+            + str(project.get("revenue_flow_impacted", ""))
+        )
+        st.markdown("**Audit Critical:** " + str(project.get("audit_critical", "")))
 
         st.markdown("**Systems Touched:**")
-        st.code(str(project["systems_touched"]), language="text")
+        st.code(str(project.get("systems_touched", "")), language="text")
 
         st.markdown("**Pain Points:**")
-        st.write(str(project["pain_points"]))
+        st.write(str(project.get("pain_points", "")))
 
         st.markdown("#### Current Scores (Human-Set)")
         score_cols = st.columns(6)
@@ -197,8 +227,8 @@ else:
             with st.spinner("Calling Copilot API (scoring)..."):
                 try:
                     ai_result = call_ai_scoring(
-                        description=str(project["pain_points"]),
-                        systems=str(project["systems_touched"]),
+                        description=str(project.get("pain_points", "")),
+                        systems=str(project.get("systems_touched", "")),
                     )
 
                     ai_bi = ai_result["bi"]
@@ -233,7 +263,7 @@ else:
                         st.write(", ".join(lenses))
 
                     st.caption(
-                        "Note: This does not overwrite your CSV yet — "
+                        "Note: This does not overwrite your D1 data yet — "
                         "it’s a decision-support suggestion."
                     )
 
@@ -247,12 +277,14 @@ else:
             with st.spinner("Calling Copilot API (charter)..."):
                 try:
                     charter_resp = call_project_charter(
-                        name=str(project["name"]),
-                        project_type=str(project["type"]),
-                        pain_points=str(project["pain_points"]),
-                        systems_touched=str(project["systems_touched"]),
-                        revenue_flow_impacted=str(project["revenue_flow_impacted"]),
-                        audit_critical=str(project["audit_critical"]),
+                        name=str(project.get("name", "")),
+                        project_type=str(project.get("type", "")),
+                        pain_points=str(project.get("pain_points", "")),
+                        systems_touched=str(project.get("systems_touched", "")),
+                        revenue_flow_impacted=str(
+                            project.get("revenue_flow_impacted", "")
+                        ),
+                        audit_critical=str(project.get("audit_critical", "")),
                     )
                     charter_md = charter_resp.get("charter_markdown", "")
                     if charter_md:
