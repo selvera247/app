@@ -3,7 +3,7 @@ import streamlit as st
 import requests
 
 # ✅ Your Cloudflare Worker backlog API
-BACKLOG_API = "https://intake.selveracj.workers.dev/api/backlog"
+BACKLOG_API = "https://revenue-intake-app.pages.dev/api/backlog"
 
 # ✅ Your FastAPI backend for scoring + charter (same as before)
 API_BASE = "http://localhost:8000"
