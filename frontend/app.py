@@ -10,7 +10,7 @@ INTAKE_API_BASE = "https://revenue-intake-app.pages.dev/api/update_status"
 API_BASE = "http://localhost:8000"
 
 # ✅ Jira browse base – update this to your real Jira URL
-JIRA_BROWSE_BASE = "https://your-domain.atlassian.net/browse/"  # <-- change me
+JIRA_BROWSE_BASE = "https://selvera24.atlassian.net/browse/"  # <-- change me
 
 
 st.set_page_config(
