@@ -2,11 +2,15 @@ import pandas as pd
 import streamlit as st
 import requests
 
-# ✅ Your Cloudflare Worker backlog API
+# ✅ Cloudflare Pages API
 BACKLOG_API = "https://revenue-intake-app.pages.dev/api/backlog"
+INTAKE_API_BASE = "https://revenue-intake-app.pages.dev/api/intake"
 
-# ✅ Your FastAPI backend for scoring + charter (same as before)
+# ✅ Your FastAPI backend for scoring + charter
 API_BASE = "http://localhost:8000"
+
+# ✅ Jira browse base – update this to your real Jira URL
+JIRA_BROWSE_BASE = "https://your-domain.atlassian.net/browse/"  # <-- change me
 
 
 st.set_page_config(
@@ -19,7 +23,7 @@ st.set_page_config(
 @st.cache_data
 def load_projects() -> pd.DataFrame:
     """
-    Load projects from Cloudflare D1 via Worker JSON API.
+    Load projects from Cloudflare D1 via Pages JSON API.
     Expects { "projects": [ ... ] } from /api/backlog.
     """
     resp = requests.get(BACKLOG_API, timeout=30)
@@ -88,6 +92,17 @@ def call_project_charter(
     return resp.json()
 
 
+def update_status(intake_id: str, new_status: str):
+    """
+    Call Pages API to update status for a given intake id.
+    """
+    url = f"{INTAKE_API_BASE}/{intake_id}"
+    payload = {"status": new_status}
+    resp = requests.put(url, json=payload, timeout=30)
+    resp.raise_for_status()
+    return resp.json()
+
+
 # ---------------------------
 # Load data
 # ---------------------------
@@ -137,21 +152,26 @@ st.subheader(f"Backlog ({len(filtered)} of {len(df)} projects)")
 if filtered.empty:
     st.info("No projects found. Check your D1 data or filters.")
 else:
+    # Show Jira key in table if present
+    cols_to_show = [
+        "id",
+        "name",
+        "source",
+        "type",
+        "status",
+        "revenue_flow_impacted",
+        "audit_critical",
+        "priority_score",
+        "systems_touched",
+        "pain_points",
+    ]
+    if "jira_key" in filtered.columns:
+        cols_to_show.insert(5, "jira_key")
+
+    available_cols = [c for c in cols_to_show if c in filtered.columns]
+
     st.dataframe(
-        filtered[
-            [
-                "id",
-                "name",
-                "source",
-                "type",
-                "status",
-                "revenue_flow_impacted",
-                "audit_critical",
-                "priority_score",
-                "systems_touched",
-                "pain_points",
-            ]
-        ],
+        filtered[available_cols],
         use_container_width=True,
     )
 
@@ -172,10 +192,17 @@ else:
     with col_left:
         st.markdown(f"### {project['name']}")
 
-        meta_cols = st.columns(3)
+        meta_cols = st.columns(4)
         meta_cols[0].metric("Type", project.get("type", ""))
         meta_cols[1].metric("Source", project.get("source", ""))
         meta_cols[2].metric("Status", project.get("status", ""))
+
+        jira_key = project.get("jira_key", None)
+        if jira_key:
+            jira_url = f"{JIRA_BROWSE_BASE}{jira_key}"
+            meta_cols[3].markdown(f"**Jira**  \n[{jira_key}]({jira_url})")
+        else:
+            meta_cols[3].markdown("**Jira**  \n–")
 
         st.markdown(
             "**Revenue Flow Impacted:** "
@@ -200,7 +227,6 @@ else:
 
         st.metric("Priority Score", project.get("priority_score", None))
 
-        # Project Charter display area
         st.markdown("#### 📄 Project Charter")
 
         charter_text = st.session_state.get("charter_text", "")
@@ -209,7 +235,6 @@ else:
         if charter_text and charter_project_id == project["id"]:
             st.markdown(charter_text)
 
-            # Download as .md
             st.download_button(
                 "⬇️ Download Charter (.md)",
                 data=charter_text,
@@ -218,6 +243,40 @@ else:
             )
         else:
             st.info("No charter generated yet for this project.")
+
+        # ---------- Status update controls ----------
+        st.markdown("#### 🔄 Update Status")
+
+        allowed_statuses = [
+            "New",
+            "Triage Review",
+            "Prioritized",
+            "Sent to Epic",
+            "In Progress",
+            "Complete",
+            "Blocked",
+            "Cancelled",
+        ]
+
+        current_status = str(project.get("status", "New"))
+        new_status = st.selectbox(
+            "Set new status",
+            allowed_statuses,
+            index=allowed_statuses.index(current_status)
+            if current_status in allowed_statuses
+            else 0,
+            key=f"status_select_{project['id']}",
+        )
+
+        if st.button("Save Status", key=f"save_status_{project['id']}"):
+            try:
+                update_status(str(project["id"]), new_status)
+                st.success(f"Status updated to {new_status}")
+                # refresh data
+                load_projects.clear()
+                st.rerun()
+            except Exception as e:
+                st.error(f"Failed to update status: {e}")
 
     # ---------- Right: AI Insights & Charter Trigger ----------
     with col_right:
