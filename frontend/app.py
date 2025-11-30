@@ -2,9 +2,9 @@ import pandas as pd
 import streamlit as st
 import requests
 
-# ✅ Cloudflare Pages API
+# ✅ Cloudflare Pages APIs
 BACKLOG_API = "https://revenue-intake-app.pages.dev/api/backlog"
-INTAKE_API_BASE = "https://revenue-intake-app.pages.dev/api/update_status"
+STATUS_API = "https://revenue-intake-app.pages.dev/api/update_status"
 
 # ✅ Your FastAPI backend for scoring + charter
 API_BASE = "http://localhost:8000"
@@ -94,10 +94,10 @@ def call_project_charter(
 
 def update_status(intake_id: str, new_status: str):
     """
-    Call Pages API to update status for a given intake id.
+    Call Cloudflare Pages API to update status for a given intake id.
     """
-    url = f"{INTAKE_API_BASE}/{intake_id}"
-    payload = {"status": new_status}
+    url = STATUS_API
+    payload = {"id": intake_id, "status": new_status}
     resp = requests.put(url, json=payload, timeout=30)
     resp.raise_for_status()
     return resp.json()
