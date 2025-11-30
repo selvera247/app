@@ -4,7 +4,7 @@ import requests
 
 # ✅ Cloudflare Pages API
 BACKLOG_API = "https://revenue-intake-app.pages.dev/api/backlog"
-INTAKE_API_BASE = "https://revenue-intake-app.pages.dev/api/intake"
+INTAKE_API_BASE = "https://revenue-intake-app.pages.dev/api/update_status"
 
 # ✅ Your FastAPI backend for scoring + charter
 API_BASE = "http://localhost:8000"
