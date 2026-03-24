@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finance AI Acceleration Blueprint — Cover</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --deep: #080311;
+    --violet: #6c2bd9;
+    --violet-mid: #8b3dff;
+    --violet-bright: #a855f7;
+    --violet-glow: #c084fc;
+    --pink: #e879f9;
+    --white: #f8f4ff;
+    --muted: rgba(248,244,255,0.52);
+  }
+  html, body { background: var(--deep); font-family: 'DM Sans', sans-serif; color: var(--white); }
+  .page {
+    width: 850px; min-height: 1100px;
+    margin: 0 auto; position: relative;
+    overflow: hidden; background: var(--deep);
+    display: flex; flex-direction: column;
+    padding: 52px 60px 48px;
+  }
+  .nebula {
+    position: absolute; inset: 0; z-index: 0;
+  }
+  .nebula::before {
+    content: '';
+    position: absolute;
+    width: 800px; height: 800px;
+    top: -220px; right: -220px;
+    background: radial-gradient(ellipse, rgba(168,85,247,0.42) 0%, rgba(108,43,217,0.2) 38%, transparent 68%);
+    animation: breathe 7s ease-in-out infinite alternate;
+  }
+  .nebula::after {
+    content: '';
+    position: absolute;
+    width: 480px; height: 480px;
+    bottom: -80px; left: -80px;
+    background: radial-gradient(ellipse, rgba(232,121,249,0.16) 0%, transparent 65%);
+  }
+  @keyframes breathe { from { transform: scale(1); } to { transform: scale(1.07); } }
+  .stars {
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(1.5px 1.5px at 10% 14%, rgba(255,255,255,0.8) 0%, transparent 100%),
+      radial-gradient(1px 1px at 28% 7%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 55% 20%, rgba(255,255,255,0.65) 0%, transparent 100%),
+      radial-gradient(1px 1px at 78% 4%, rgba(255,255,255,0.45) 0%, transparent 100%),
+      radial-gradient(2px 2px at 88% 32%, rgba(168,85,247,0.9) 0%, transparent 100%),
+      radial-gradient(1px 1px at 92% 18%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 18% 50%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 42% 58%, rgba(232,121,249,0.7) 0%, transparent 100%),
+      radial-gradient(1px 1px at 65% 72%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(2px 2px at 8%  80%, rgba(168,85,247,0.6) 0%, transparent 100%);
+  }
+  /* header */
+  .header {
+    position: relative; z-index: 2;
+    display: flex; align-items: center; gap: 12px;
+    animation: fadeDown .65s .05s both;
+  }
+  .logo-mark {
+    width: 38px; height: 38px; border-radius: 10px;
+    background: rgba(168,85,247,0.18);
+    border: 1.5px solid rgba(168,85,247,0.45);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .logo-mark svg { width: 20px; height: 20px; }
+  .brand-name { font-family:'Syne',sans-serif; font-size:13px; font-weight:700; letter-spacing:.05em; }
+  .brand-sub  { font-size:10px; color:var(--muted); letter-spacing:.07em; margin-top:1px; }
+
+/* hero */
+.hero { position: relative; z-index: 2; margin-top: 100px; flex: 1; }
+.eyebrow {
+font-size:11px; letter-spacing:.2em; text-transform:uppercase;
+color:var(–violet-glow); margin-bottom:22px;
+animation: fadeUp .65s .3s both;
+}
+h1 {
+font-family:‘Syne’,sans-serif; font-size:78px; font-weight:800;
+line-height:1.0; letter-spacing:-.025em;
+animation: fadeUp .75s .45s both;
+}
+h1 .w { color:var(–white); display:block; }
+h1 .g {
+display:block;
+background: linear-gradient(125deg, var(–violet-mid) 10%, var(–pink) 90%);
+-webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.client-tag {
+display:inline-block; margin-top:26px;
+padding:6px 20px;
+border:1px solid rgba(168,85,247,.3);
+border-radius:4px;
+font-size:14px; color:var(–violet-glow);
+background:rgba(108,43,217,.1);
+animation: fadeUp .65s .6s both;
+}
+.desc {
+margin-top:30px; max-width:490px;
+font-size:15px; line-height:1.75;
+color:var(–muted); font-weight:300;
+animation: fadeUp .65s .75s both;
+}
+
+/* dashboard card */
+.card {
+position:absolute; right:0; top:30px;
+width:300px;
+background:rgba(255,255,255,.04);
+border:1px solid rgba(168,85,247,.2);
+border-radius:14px; padding:20px;
+backdrop-filter:blur(14px);
+box-shadow:0 24px 60px rgba(0,0,0,.45), 0 0 50px rgba(108,43,217,.14);
+animation: slideL .85s .9s both;
+}
+.card-title { font-size:10px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(–violet-glow); margin-bottom:14px; }
+.cr { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+.cl { font-size:11px; color:var(–muted); }
+.cv { font-family:‘Syne’,sans-serif; font-size:13px; font-weight:700; }
+.up { color:#4ade80; } .dn { color:#f87171; }
+.sep { height:1px; background:rgba(255,255,255,.07); margin:12px 0; }
+.ai-lbl { font-size:10px; color:var(–violet-glow); margin-bottom:7px; font-weight:500; }
+.narr { font-size:11px; color:var(–muted); line-height:1.65; }
+.kpis { display:flex; gap:8px; margin-top:14px; }
+.kpi { flex:1; background:rgba(108,43,217,.15); border-radius:8px; padding:9px; }
+.kv  { font-family:‘Syne’,sans-serif; font-size:13px; font-weight:700; color:var(–violet-glow); }
+.kl  { font-size:10px; color:var(–muted); margin-top:2px; }
+
+/* footer */
+.footer {
+position:relative; z-index:2;
+display:flex; justify-content:space-between; align-items:center;
+margin-top:auto; padding-top:24px;
+border-top:1px solid rgba(255,255,255,.08);
+font-size:12px; color:var(–muted);
+animation: fadeUp .6s 1.1s both;
+}
+.footer strong { color:var(–white); font-weight:500; }
+
+@keyframes fadeUp   { from{opacity:0;transform:translateY(18px)}  to{opacity:1;transform:translateY(0)} }
+@keyframes fadeDown { from{opacity:0;transform:translateY(-14px)} to{opacity:1;transform:translateY(0)} }
+@keyframes slideL   { from{opacity:0;transform:translateX(28px)}  to{opacity:1;transform:translateX(0)} }
+</style>
+
+</head>
+<body>
+<div class="page">
+  <div class="nebula"><div class="stars"></div></div>
+
+  <div class="header">
+    <div class="logo-mark">
+      <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#a855f7" stroke-width="1.5"/><circle cx="10" cy="10" r="3.5" fill="#a855f7" opacity=".75"/></svg>
+    </div>
+    <div>
+      <div class="brand-name">PEAK ADMIN AI</div>
+      <div class="brand-sub">Finance AI Systems &amp; Automation</div>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="eyebrow">Strategic Assessment · 2025</div>
+    <h1>
+      <span class="w">Finance AI</span>
+      <span class="g">Acceleration<br>Blueprint</span>
+    </h1>
+    <div class="client-tag">[Client Name]</div>
+    <p class="desc">A strategic assessment to modernize your finance operations with AI — reduce manual work, accelerate close cycles, and unlock real-time insights.</p>
+
+```
+<div class="card">
+  <div class="card-title">AI-Powered Variance Analysis</div>
+  <div class="cr"><span class="cl">Revenue Variance Q2 vs Q1</span><span class="cv up">+12%</span></div>
+  <div class="cr"><span class="cl">Deferred Revenue</span><span class="cv dn">−8%</span></div>
+  <div class="sep"></div>
+  <div class="ai-lbl">AI Generated Commentary</div>
+  <div class="narr">Revenue increased 12% QoQ driven by higher-margin enterprise data volume. Deferred revenue recognition accelerated into Q3.</div>
+  <div class="kpis">
+    <div class="kpi"><div class="kv">−30%</div><div class="kl">Close cycle time</div></div>
+    <div class="kpi"><div class="kv">−40%</div><div class="kl">Manual work</div></div>
+    <div class="kpi"><div class="kv">Live</div><div class="kl">Visibility</div></div>
+  </div>
+</div>
+```
+
+  </div>
+
+  <div class="footer">
+    <span><strong>Prepared by:</strong> Peak Admin AI</span>
+    <span>Date: April 2025</span>
+  </div>
+</div>
+</body>
+</html>
