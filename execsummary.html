@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finance AI Acceleration Blueprint — Executive Summary</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #ffffff;
+    --surface: #f7f5ff;
+    --violet: #6c2bd9;
+    --violet-mid: #8b3dff;
+    --violet-light: #ede9fe;
+    --violet-glow: #7c3aed;
+    --text: #1a1030;
+    --muted: #6b6385;
+    --accent: #a855f7;
+  }
+  html, body { background: #e8e4f4; font-family: 'DM Sans', sans-serif; color: var(--text); }
+  .page {
+    width: 850px; min-height: 1100px;
+    margin: 0 auto; background: var(--bg);
+    display: flex; flex-direction: column;
+    padding: 56px 64px 52px;
+    box-shadow: 0 4px 40px rgba(108,43,217,.12);
+    animation: pageIn .5s ease both;
+  }
+  @keyframes pageIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+/* top bar */
+.topbar {
+display: flex; justify-content: space-between; align-items: center;
+margin-bottom: 44px;
+padding-bottom: 20px;
+border-bottom: 1.5px solid var(–violet-light);
+}
+.topbar-brand { display:flex; align-items:center; gap:10px; }
+.topbar-dot { width:8px; height:8px; border-radius:50%; background:var(–accent); }
+.topbar-name { font-size:11px; font-weight:500; letter-spacing:.1em; text-transform:uppercase; color:var(–muted); }
+.topbar-pg { font-size:11px; color:var(–muted); letter-spacing:.06em; }
+
+/* section header */
+.section-label {
+font-size: 11px; letter-spacing:.18em; text-transform:uppercase;
+color: var(–accent); margin-bottom: 6px;
+animation: fadeUp .5s .1s both;
+}
+h1 {
+font-family:‘Syne’,sans-serif; font-size:42px; font-weight:800;
+letter-spacing:-.015em; color: var(–text); margin-bottom: 36px;
+animation: fadeUp .55s .15s both;
+}
+h1 span {
+background: linear-gradient(120deg, var(–violet) 20%, var(–accent));
+-webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:40px; flex:1; }
+
+/* overview */
+.block { margin-bottom: 32px; animation: fadeUp .5s .25s both; }
+.block-title {
+font-family:‘Syne’,sans-serif; font-size:16px; font-weight:700;
+color: var(–violet); margin-bottom:12px;
+position:relative; padding-left:14px;
+}
+.block-title::before {
+content:’’; position:absolute; left:0; top:50%; transform:translateY(-50%);
+width:4px; height:16px; background:var(–violet); border-radius:2px;
+}
+.block p {
+font-size:14px; line-height:1.75; color:#3d3456; font-weight:400;
+}
+
+/* findings */
+.findings { animation: fadeUp .5s .35s both; }
+.findings-title {
+font-family:‘Syne’,sans-serif; font-size:16px; font-weight:700;
+color:var(–violet); margin-bottom:14px;
+position:relative; padding-left:14px;
+}
+.findings-title::before {
+content:’’; position:absolute; left:0; top:50%; transform:translateY(-50%);
+width:4px; height:16px; background:var(–accent); border-radius:2px;
+}
+.finding {
+display:flex; align-items:flex-start; gap:10px;
+margin-bottom:12px; padding:10px 14px;
+background:var(–surface);
+border-radius:8px;
+border-left:3px solid transparent;
+transition: border-color .2s;
+}
+.finding:hover { border-left-color: var(–accent); }
+.check {
+width:18px; height:18px; border-radius:50%;
+background:var(–violet-light);
+display:flex; align-items:center; justify-content:center;
+flex-shrink:0; margin-top:1px;
+}
+.check svg { width:10px; height:10px; }
+.finding p { font-size:13px; line-height:1.6; color:var(–muted); }
+
+/* impact table */
+.impact { margin-top:32px; animation: fadeUp .5s .45s both; }
+.impact-title {
+font-family:‘Syne’,sans-serif; font-size:18px; font-weight:700;
+color:var(–text); margin-bottom:14px;
+}
+table { width:100%; border-collapse:collapse; }
+thead th {
+background:var(–violet); color:#fff;
+font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+padding:10px 14px; text-align:left;
+}
+thead th:first-child { border-radius:6px 0 0 6px; }
+thead th:last-child  { border-radius:0 6px 6px 0; }
+tbody tr:nth-child(even) { background:var(–surface); }
+tbody td { padding:11px 14px; font-size:13px; color:var(–text); }
+tbody td.metric { font-weight:500; }
+.arrow { color:var(–accent); font-size:16px; font-weight:700; }
+
+/* right column */
+.right-col { display:flex; flex-direction:column; gap:0; }
+
+/* footer */
+.footer {
+margin-top: auto; padding-top:20px;
+border-top:1px solid var(–violet-light);
+display:flex; justify-content:space-between; align-items:center;
+font-size:11px; color:var(–muted);
+animation: fadeUp .5s .6s both;
+}
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+</style>
+
+</head>
+<body>
+<div class="page">
+
+  <!-- top bar -->
+
+  <div class="topbar">
+    <div class="topbar-brand">
+      <div class="topbar-dot"></div>
+      <div class="topbar-name">Peak Admin AI · Finance AI Acceleration Blueprint</div>
+    </div>
+    <div class="topbar-pg">Page 2</div>
+  </div>
+
+  <div class="section-label">Document Overview</div>
+  <h1><span>Executive Summary</span></h1>
+
+  <div class="two-col">
+    <!-- left -->
+    <div>
+      <div class="block">
+        <div class="block-title">Overview</div>
+        <p>Your finance operations are currently running on a mix of manual and semi-automated processes, limiting scalability, speed, and quality of decision-making. This assessment identified key opportunities to leverage AI across operations to reduce manual workload, accelerate close cycles, improve data accuracy, and enable real-time insights.</p>
+      </div>
+
+```
+  <div class="findings">
+    <div class="findings-title">Key Findings</div>
+    <div class="finding">
+      <div class="check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="#6c2bd9" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <p>Heavy reliance on spreadsheets for reconciliations, creating manual bottlenecks</p>
+    </div>
+    <div class="finding">
+      <div class="check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="#6c2bd9" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <p>Manual reporting processes consuming significant time from senior finance staff</p>
+    </div>
+    <div class="finding">
+      <div class="check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="#6c2bd9" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <p>Limited visibility into real-time financial performance across business units</p>
+    </div>
+    <div class="finding">
+      <div class="check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="#6c2bd9" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <p>Reactive vs. proactive finance operations — issues identified after the fact</p>
+    </div>
+  </div>
+</div>
+
+<!-- right -->
+<div class="right-col">
+  <div class="impact">
+    <div class="impact-title">Impact Summary</div>
+    <table>
+      <thead>
+        <tr>
+          <th>GAMPlet</th>
+          <th>Current State</th>
+          <th></th>
+          <th>Future State</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="metric">Close Cycle</td>
+          <td>7–10 days</td>
+          <td class="arrow">→</td>
+          <td>3–5 days</td>
+        </tr>
+        <tr>
+          <td class="metric">Reconciliation Effort</td>
+          <td>High manual</td>
+          <td class="arrow">→</td>
+          <td>AI-assisted</td>
+        </tr>
+        <tr>
+          <td class="metric">Reporting</td>
+          <td>Static</td>
+          <td class="arrow">→</td>
+          <td>Real-time</td>
+        </tr>
+        <tr>
+          <td class="metric">Visibility</td>
+          <td>Limited</td>
+          <td class="arrow">→</td>
+          <td>Continuous</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+```
+
+  </div>
+
+  <div class="footer">
+    <span>Finance AI Acceleration Blueprint</span>
+    <span>Peak Admin AI · Confidential</span>
+  </div>
+</div>
+</body>
+</html>
