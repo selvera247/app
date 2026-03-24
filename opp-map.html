@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finance AI Acceleration Blueprint — Opportunity Map</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #ffffff;
+    --surface: #f7f5ff;
+    --violet: #6c2bd9;
+    --violet-mid: #8b3dff;
+    --violet-light: #ede9fe;
+    --accent: #a855f7;
+    --text: #1a1030;
+    --muted: #6b6385;
+    --card-bg: #faf9ff;
+  }
+  html, body { background: #e8e4f4; font-family: 'DM Sans', sans-serif; color: var(--text); }
+  .page {
+    width: 850px; min-height: 1100px;
+    margin: 0 auto; background: var(--bg);
+    display: flex; flex-direction: column;
+    padding: 56px 64px 52px;
+    box-shadow: 0 4px 40px rgba(108,43,217,.12);
+    animation: pageIn .5s ease both;
+  }
+  @keyframes pageIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+.topbar {
+display:flex; justify-content:space-between; align-items:center;
+margin-bottom:44px; padding-bottom:20px;
+border-bottom:1.5px solid var(–violet-light);
+}
+.topbar-brand { display:flex; align-items:center; gap:10px; }
+.topbar-dot { width:8px; height:8px; border-radius:50%; background:var(–accent); }
+.topbar-name { font-size:11px; font-weight:500; letter-spacing:.1em; text-transform:uppercase; color:var(–muted); }
+.topbar-pg { font-size:11px; color:var(–muted); letter-spacing:.06em; }
+
+.section-label { font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(–accent); margin-bottom:6px; animation:fadeUp .5s .1s both; }
+h1 { font-family:‘Syne’,sans-serif; font-size:42px; font-weight:800; letter-spacing:-.015em; margin-bottom:8px; animation:fadeUp .55s .15s both; }
+h1 span { background:linear-gradient(120deg,var(–violet) 20%,var(–accent)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.subtitle { font-size:14px; color:var(–muted); margin-bottom:36px; animation:fadeUp .5s .2s both; }
+
+.grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; flex:1; }
+
+.opp-card {
+background:var(–card-bg);
+border:1.5px solid var(–violet-light);
+border-radius:12px; padding:22px;
+display:flex; flex-direction:column; gap:0;
+transition:border-color .2s, box-shadow .2s;
+animation: fadeUp .5s both;
+}
+.opp-card:hover { border-color:var(–accent); box-shadow:0 4px 24px rgba(168,85,247,.1); }
+.opp-card:nth-child(1) { animation-delay:.25s; }
+.opp-card:nth-child(2) { animation-delay:.35s; }
+.opp-card:nth-child(3) { animation-delay:.45s; }
+.opp-card:nth-child(4) { animation-delay:.55s; }
+
+.card-header { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
+.card-icon {
+width:36px; height:36px; border-radius:9px;
+background:var(–violet-light);
+display:flex; align-items:center; justify-content:center;
+flex-shrink:0;
+}
+.card-icon svg { width:18px; height:18px; }
+.card-title { font-family:‘Syne’,sans-serif; font-size:15px; font-weight:700; color:var(–violet); }
+
+.item {
+display:flex; align-items:flex-start; gap:8px;
+margin-bottom:9px; padding:8px 10px;
+background:#fff;
+border-radius:7px;
+border:1px solid rgba(108,43,217,.08);
+}
+.item-dot { width:6px; height:6px; border-radius:50%; background:var(–accent); flex-shrink:0; margin-top:6px; }
+.item p { font-size:12.5px; line-height:1.55; color:var(–muted); }
+
+.footer {
+margin-top:auto; padding-top:20px;
+border-top:1px solid var(–violet-light);
+display:flex; justify-content:space-between;
+font-size:11px; color:var(–muted);
+animation:fadeUp .5s .65s both;
+}
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+</style>
+
+</head>
+<body>
+<div class="page">
+
+  <div class="topbar">
+    <div class="topbar-brand">
+      <div class="topbar-dot"></div>
+      <div class="topbar-name">Peak Admin AI · Finance AI Acceleration Blueprint</div>
+    </div>
+    <div class="topbar-pg">Page 3</div>
+  </div>
+
+  <div class="section-label">AI Use Cases</div>
+  <h1><span>Opportunity Map</span></h1>
+  <div class="subtitle">AI Process Breakdown — Priority Areas for Automation &amp; Intelligence</div>
+
+  <div class="grid">
+
+```
+<!-- Close & Reconciliation -->
+<div class="opp-card">
+  <div class="card-header">
+    <div class="card-icon">
+      <svg viewBox="0 0 18 18" fill="none"><rect x="2" y="3" width="14" height="12" rx="2" stroke="#6c2bd9" stroke-width="1.5"/><path d="M6 9l2 2 4-4" stroke="#6c2bd9" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </div>
+    <div class="card-title">Close &amp; Reconciliation</div>
+  </div>
+  <div class="item"><div class="item-dot"></div><p>AI-driven variance analysis — auto-flag and explain discrepancies at close</p></div>
+  <div class="item"><div class="item-dot"></div><p>Risk-based reconciliation prioritization — focus team effort on high-risk items</p></div>
+  <div class="item"><div class="item-dot"></div><p>Automated flux commentary generation with context-aware narrative output</p></div>
+</div>
+
+<!-- Reporting & Insights -->
+<div class="opp-card">
+  <div class="card-header">
+    <div class="card-icon">
+      <svg viewBox="0 0 18 18" fill="none"><path d="M3 13l4-5 3 3 3-4 3 2" stroke="#6c2bd9" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="15" cy="9" r="1.5" fill="#6c2bd9"/></svg>
+    </div>
+    <div class="card-title">Reporting &amp; Insights</div>
+  </div>
+  <div class="item"><div class="item-dot"></div><p>Automated report generation — eliminate manual slide and pack creation</p></div>
+  <div class="item"><div class="item-dot"></div><p>AI-generated narratives that contextualize numbers for non-finance stakeholders</p></div>
+  <div class="item"><div class="item-dot"></div><p>Real-time dashboards with drill-down capability and anomaly surfacing</p></div>
+</div>
+
+<!-- Order-to-Cash -->
+<div class="opp-card">
+  <div class="card-header">
+    <div class="card-icon">
+      <svg viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7" stroke="#6c2bd9" stroke-width="1.5"/><path d="M9 5.5v7M6.5 8.5h5" stroke="#6c2bd9" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </div>
+    <div class="card-title">Order-to-Cash</div>
+  </div>
+  <div class="item"><div class="item-dot"></div><p>AR aging intelligence — predictive scoring of collection risk by account</p></div>
+  <div class="item"><div class="item-dot"></div><p>Collections prioritization engine driving outreach to highest-risk receivables</p></div>
+  <div class="item"><div class="item-dot"></div><p>Cash forecasting enhancements using AI pattern recognition on payment history</p></div>
+</div>
+
+<!-- Workflow Automation -->
+<div class="opp-card">
+  <div class="card-header">
+    <div class="card-icon">
+      <svg viewBox="0 0 18 18" fill="none"><path d="M4 9h10M4 5h6M4 13h8" stroke="#6c2bd9" stroke-width="1.5" stroke-linecap="round"/><circle cx="14" cy="5" r="2" fill="#6c2bd9" opacity=".6"/></svg>
+    </div>
+    <div class="card-title">Workflow Automation</div>
+  </div>
+  <div class="item"><div class="item-dot"></div><p>Journal entry anomaly detection — flag suspicious or unusual entries pre-post</p></div>
+  <div class="item"><div class="item-dot"></div><p>Task orchestration with intelligent routing and deadline awareness</p></div>
+  <div class="item"><div class="item-dot"></div><p>Exception-based alerts so the team focuses only where human judgment is needed</p></div>
+</div>
+```
+
+  </div>
+
+  <div class="footer">
+    <span>Finance AI Acceleration Blueprint</span>
+    <span>Peak Admin AI · Confidential</span>
+  </div>
+</div>
+</body>
+</html>
